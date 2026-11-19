@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}เข้าสู่ระบบ – MPI FTP Portal{% endblock %}
+{% block body %}
+<div class="card" style="max-width:380px;margin:60px auto">
+  <h2 style="margin-top:0">เข้าสู่ระบบ FTP</h2>
+  <p class="muted" style="margin-top:-6px">{{ proto }} · {{ host }}</p>
+  <form method="post">
+    <label>ชื่อผู้ใช้</label>
+    <input type="text" name="username" value="{{ default_user }}" required autocomplete="username">
+    <div style="height:12px"></div>
+    <label>รหัสผ่าน</label>
+    <input type="password" name="password" required autocomplete="current-password" autofocus>
+    <div style="height:16px"></div>
+    <button class="btn" style="width:100%">เชื่อมต่อ</button>
+  </form>
+</div>
+{% endblock %}

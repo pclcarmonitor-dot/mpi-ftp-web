@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="card">
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+    <div style="font-size:16px">
+      <a href="{{ url_for('browse', path='/') }}">/</a>{% for seg, p in parts %}<a href="{{ url_for('browse', path=p) }}">{{ seg }}</a>/{% endfor %}
+    </div>
+    <form style="margin-left:auto;display:flex;gap:6px" method="get">
+      <input type="hidden" name="path" value="{{ path }}">
+      <input type="search" name="q" value="{{ q }}" placeholder="ค้นหาชื่อไฟล์..." style="width:220px">
+      <button class="btn sec">ค้นหา</button>
+    </form>
+    <a class="btn sec" href="{{ url_for('browse', path=path) }}">⟳ รีเฟรช</a>
+  </div>
+
+  {% if allow_upload %}
+  <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data"
+        style="display:flex;gap:8px;align-items:center;margin-bottom:12px;padding:10px;border:1px dashed var(--line);border-radius:8px">
+    <input type="hidden" name="path" value="{{ path }}">
+    <input type="file" name="files" multiple required>
+    <button class="btn">⬆ อัปโหลดมาที่ {{ path }}</button>
+  </form>
+  {% endif %}
+
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr><th>ชื่อ</th><th>ขนาด</th><th>แก้ไขล่าสุด</th><th></th></tr></thead>
+    <tbody>
+    {% if parent %}
+      <tr><td colspan="4"><a href="{{ url_for('browse', path=parent) }}">⬑ ..</a></td></tr>
+    {% endif %}
+    {% for it in items %}
+      {% set full = join(path, it.name) %}
+      <tr>
+        <td class="name">
+          {% if it.is_dir %}📁 <a href="{{ url_for('browse', path=full) }}">{{ it.name }}</a>
+          {% else %}📄 <a href="{{ url_for('preview', path=full) }}">{{ it.name }}</a>{% endif %}
+        </td>
+        <td class="muted">{{ '' if it.is_dir else it.size|filesize }}</td>
+        <td class="muted">{{ it.mtime.strftime('%d/%m/%Y %H:%M') if it.mtime else '' }}</td>
+        <td style="text-align:right">
+          {% if not it.is_dir %}
+            <a class="btn sec" href="{{ url_for('download', path=full) }}">⬇ ดาวน์โหลด</a>
+            {% if allow_delete %}
+            <form method="post" action="{{ url_for('delete') }}" style="display:inline" onsubmit="return confirm('ลบ {{ it.name }} ?')">
+              <input type="hidden" name="path" value="{{ full }}"><button class="btn danger">ลบ</button>
+            </form>
+            {% endif %}
+          {% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="muted">ไม่มีไฟล์</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="muted" style="margin-bottom:0">{{ items|length }} รายการ</p>
+</div>
+{% endblock %}
