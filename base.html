@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}MPI FTP Portal{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--line:#e3e7ee;--text:#1f2937;--muted:#6b7280;--brand:#1d4ed8;--brand2:#e8efff;--ok:#047857;--err:#b91c1c}
+*{box-sizing:border-box}
+body{margin:0;font-family:Sarabun,system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px}
+a{color:var(--brand);text-decoration:none}
+header{background:#0f2a6b;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header .logo{font-weight:600;font-size:17px}
+header .meta{opacity:.8;font-size:13px}
+header .right{margin-left:auto;display:flex;gap:12px;align-items:center;font-size:14px}
+header a{color:#fff;border:1px solid rgba(255,255,255,.4);padding:4px 12px;border-radius:6px}
+main{max-width:1100px;margin:20px auto;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.flash{padding:10px 14px;border-radius:8px;margin-bottom:12px}
+.flash.ok{background:#ecfdf5;color:var(--ok)} .flash.error{background:#fef2f2;color:var(--err)}
+.btn{display:inline-block;background:var(--brand);color:#fff;border:0;padding:8px 14px;border-radius:7px;cursor:pointer;font:inherit}
+.btn.sec{background:var(--brand2);color:var(--brand)}
+.btn.danger{background:#fee2e2;color:var(--err)}
+input[type=text],input[type=password],input[type=search]{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:7px;width:100%}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:600;color:var(--muted);font-size:13px}
+tr:hover td{background:#f8faff}
+.name{white-space:normal;word-break:break-all}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">📁 MPI FTP Portal</span>
+  <span class="meta">{{ proto }} · {{ host }}</span>
+  {% if user %}<span class="right">👤 {{ user }} <a href="{{ url_for('logout') }}">ออกจากระบบ</a></span>{% endif %}
+</header>
+<main>
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, m in msgs %}<div class="flash {{ cat }}">{{ m }}</div>{% endfor %}
+  {% endwith %}
+  {% block body %}{% endblock %}
+</main>
+</body>
+</html>
